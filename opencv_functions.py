@@ -48,7 +48,7 @@ def rotate(img, rot):
 # cv2.INTER_LINEAR
 # cv2.INTER_CUBIC
 # cv2.INTER_AREA
-def uniform_scale(img, factor, interp):
+def uniform_scale(img, factor, interp=cv2.INTER_NEAREST):
     scaled_resolution = (img.shape[0] * factor, img.shape[1] * factor)
     print(scaled_resolution)
     return cv2.resize(img, scaled_resolution, interpolation=interp)
@@ -58,16 +58,50 @@ def uniform_scale(img, factor, interp):
 # cv2.INTER_LINEAR
 # cv2.INTER_CUBIC
 # cv2.INTER_AREA
-def scale(img, x_factor, y_factor, interp):
+def scale(img, x_factor, y_factor, interp=cv2.INTER_NEAREST):
     scaled_resolution = (int(img.shape[0] * x_factor), int(img.shape[1] * y_factor))
     print(scaled_resolution)
     return cv2.resize(img, scaled_resolution, interpolation=interp)
 
 # Adds guassian noise to image according to parameters
-def guassian_noise(img, strength, mean=0, variance=0.1):
-    gauss = np.random.normal(mean,variance**0.5, img.shape) * 255
-    gauss = gauss.reshape(img.shape).astype(np.uint8)
-    return gauss
+def guassian_noise(img, strength=1, mean=0, variance=400):
+    gauss = np.random.normal(mean, variance**0.5, img.shape)
+    gauss = gauss.reshape(img.shape)
+    noisy = img + gauss * 2
+    noisy = np.clip(noisy, 0, 255)
+    noisy = noisy.astype(np.uint8)
+    return noisy
+
+# Adds salt and pepper noise ot image
+# ratio of salt to pepper (higher ration -> more salt)
+# single channel or B & W
+def salt_pepper_noise(img, ratio=0.5, freq=0.05, b_w=False):
+    noisy = np.copy(img)
+    amount = int(freq * img.shape[0] * img.shape[1] * img.shape[2])
+    salt = int(ratio * amount)
+
+    for i in range(amount):
+        coord = [np.random.randint(0, i) for i in img.shape]
+        if i <= salt:
+            if b_w:
+                noisy[coord[0]][coord[1]] = (255, 255, 255)
+            else:
+                noisy[coord[0]][coord[1]][coord[2]] = 255
+        else:
+            if b_w:
+                noisy[coord[0]][coord[1]] = (0, 0, 0)
+            else:
+                noisy[coord[0]][coord[1]][coord[2]] = 0
+    return noisy
+
+# Mix img and img2 using ratio
+def mix(img, img2, ratio=0.2):
+    return (img * ratio).astype(np.uint8) + (img2 * (1 - ratio)).astype(np.uint8)
+
+def insert_image(img, img2, x, y):
+    result = np.copy(img)
+    result[y: y + img2.shape[1], x: x + img2.shape[0]] = img2
+    return result
 
 # Load image from file
 # cv2.IMREAD_COLOR
@@ -92,11 +126,21 @@ if __name__ == "__main__":
     bg_dir = os.path.join(cwd, "backgrounds")
 
     test_img_path = os.path.join(bricks_dir, "3023_0.png")
+    test_img2_path = os.path.join(bricks_dir, "4073_0.png")
     test_img = load_image(test_img_path)
+    test_img2 = load_image(test_img2_path)
     test_img = convert_colourspace(test_img)
+    test_img2 = convert_colourspace(test_img2)
 
-    display_image(rotate(test_img, cv2.ROTATE_90_CLOCKWISE))
+    # display_image(test_img)
+    # display_image(test_img2)
+    # display_image(rotate(test_img, cv2.ROTATE_90_CLOCKWISE))
     # display_image(uniform_scale(test_img, 2, cv2.INTER_NEAREST))
     # display_image(scale(test_img, 2, 0.5, cv2.INTER_NEAREST))
-    display_image(guassian_noise(test_img, 0.1))
+    # display_image(guassian_noise(test_img, 2))
+    # display_image(salt_pepper_noise(test_img))
+    # display_image(salt_pepper_noise(test_img, b_w=True))
+    # display_image(mix(test_img, test_img2))
+    scaled_test2_img = scale(test_img2, 0.5, 0.5)
+    display_image(insert_image(test_img, scaled_test2_img, 100, 100))
 
