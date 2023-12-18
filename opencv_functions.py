@@ -84,12 +84,12 @@ def salt_pepper_noise(img, ratio=0.5, freq=0.05, b_w=False):
         coord = [np.random.randint(0, i) for i in img.shape]
         if i <= salt:
             if b_w:
-                noisy[coord[0]][coord[1]] = [255 for i in img.shape[2]]
+                noisy[coord[0]][coord[1]] = [255 for i in range(img.shape[2])]
             else:
                 noisy[coord[0]][coord[1]][coord[2]] = 255
         else:
             if b_w:
-                noisy[coord[0]][coord[1]] = [0 for i in img.shape[2]]
+                noisy[coord[0]][coord[1]] = [0 for i in range(img.shape[2])]
             else:
                 noisy[coord[0]][coord[1]][coord[2]] = 0
     return noisy
@@ -129,6 +129,19 @@ def remove_colour_range(img, c1, c2):
     mask = 255 - mask  # inverse mask
     return cv2.bitwise_and(img, img, mask=mask)
 
+def poisson_noise(img):
+    vals = len(np.unique(img))
+    vals = 2 ** np.ceil(np.log2(vals))
+    noisy = np.random.poisson(img * vals) / float(vals)
+    return noisy
+
+def speckle_noise(img):
+    row,col,ch = img.shape
+    gauss = np.random.randn(row,col,ch)
+    gauss = gauss.reshape(row,col,ch)        
+    noisy = img + img * gauss
+    return noisy
+
 # Load image from file
 # cv2.IMREAD_COLOR
 # cv2.IMREAD_GRAYSCALE 
@@ -165,27 +178,30 @@ if __name__ == "__main__":
     test_img = brick_imgs[0]
     test_img2 = brick_imgs[1]
 
-    display_image(test_img)
-    display_image(test_img2)
+    # display_image(test_img)
+    # display_image(test_img2)
 
-    display_image(rotate(test_img, cv2.ROTATE_90_CLOCKWISE))
-    display_image(uniform_scale(test_img, 2, cv2.INTER_NEAREST))
-    display_image(scale(test_img, 2, 0.5, cv2.INTER_NEAREST))
+    # display_image(rotate(test_img, cv2.ROTATE_90_CLOCKWISE))
+    # display_image(uniform_scale(test_img, 2, cv2.INTER_NEAREST))
+    # display_image(scale(test_img, 2, 0.5, cv2.INTER_NEAREST))
 
-    display_image(guassian_noise(test_img, 2))
+    # display_image(guassian_noise(test_img, 2))
     # display_image(salt_pepper_noise(test_img))
     # display_image(salt_pepper_noise(test_img, b_w=True))
 
-    display_image(mix_images(test_img, test_img2))
-    scaled_test2_img = scale(test_img2, 0.5, 0.5)
-    display_image(insert_image(test_img, scaled_test2_img, 100, 100))
+    # display_image(mix_images(test_img, test_img2))
+    # scaled_test2_img = scale(test_img2, 0.5, 0.5)
+    # display_image(insert_image(test_img, scaled_test2_img, 100, 100))
 
-    colour_histogram(test_img)
+    # colour_histogram(test_img)
 
-    bg_remove = remove_colour(test_img, 70, 70, 70, 255)
-    bg_remove = remove_colour(bg_remove, 71, 71, 71, 255)
-    display_image(bg_remove)
+    # bg_remove = remove_colour(test_img, 70, 70, 70, 255)
+    # bg_remove = remove_colour(bg_remove, 71, 71, 71, 255)
+    # display_image(bg_remove)
 
-    bg_rem = remove_colour_range(test_img, (70, 70, 70, 255), (72, 72, 72, 255))
-    display_image(blend_images(bg_imgs[0], bg_rem, 100, 100))
+    # bg_rem = remove_colour_range(test_img, (70, 70, 70, 255), (72, 72, 72, 255))
+    # display_image(blend_images(bg_imgs[0], bg_rem, 100, 100))
+
+    display_image(poisson_noise(test_img))
+    display_image(speckle_noise(test_img))
 
