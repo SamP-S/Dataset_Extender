@@ -4,6 +4,8 @@
 
 
 To do:
+- [ ] Get testing working
+- [ ] Add tests for all functions
 - [ ] Input validation
 - [ ] Documentation
 - [ ] Extended functionality

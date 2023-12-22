@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 import os
+
+def read_img(filepath):
+    return cv2.imread(filepath)
    
 def colour_mask(img, lower_colour, upper_colour):
     mask = cv2.inRange(img, lower_colour, upper_colour)
@@ -23,7 +26,7 @@ def colour_histogram(img):
     plt.show()
 
 def detect_lines(img):
-    edges = cv2.Canny(img,50,150,apertureSize = 3)
+    edges = cv2.Canny(img ,50, 150,apertureSize=3)
     display_image(edges)
     
     minLineLength=5
@@ -32,8 +35,8 @@ def detect_lines(img):
 
     a,b,c = lines.shape
     for i in range(a):
-        cv2.line(img, (lines[i][0][0], lines[i][0][1]), (lines[i][0][2], lines[i][0][3]), (0, 0, 255), 3, cv2.LINE_AA)
-        display_image(edges)
+        cv2.line(edges, (lines[i][0][0], lines[i][0][1]), (lines[i][0][2], lines[i][0][3]), (0, 0, 255), 3, cv2.LINE_AA)
+    return edges
 
 
 # Rotates on multiples of 90 degrees
