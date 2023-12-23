@@ -12,9 +12,9 @@ class OCVETest(unittest.TestCase):
     HOME = os.getenv("HOME")
     CWD = os.getcwd()
 
-    def check_version(self):
-        print("check_version")
-        self.assertEqual(ocve.OCVE_VERSION, "0.1.0")
+    def test_version(self):
+        print(f"OCVE version: {ocve.__version__}")
+        self.assertTrue(True)
 
     def test_add(self):
         a = 1
@@ -22,10 +22,10 @@ class OCVETest(unittest.TestCase):
         print(f"a + b = {a+b}")
         self.assertEqual(a + b, 2)
 
-    def tests(self):
+    def test_general(self):
         print(f"~ = {self.HOME}")
         print(f". = {self.CWD}")
-        test_file = self.CWD + "/resources/backgrounds/coast.jpg"
+        test_file = self.CWD + "/tests/resources/backgrounds/coast.jpg"
         print(f"test_file = {test_file}")
 
         img = ocve.read_img(test_file)

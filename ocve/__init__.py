@@ -1,6 +1,6 @@
-# import required functions
-from ocve.functions import *
+__version__ = "0.1.0"
 
-# define package constants
-MATH_PI = 3.14159
-OCVE_VERSION = "0.1.0"
+# can define constants here
+
+# import required functions
+from .functions import *
