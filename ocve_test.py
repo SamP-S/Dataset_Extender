@@ -29,16 +29,17 @@ class OCVETest(unittest.TestCase):
         print(f"test_file = {test_file}")
 
         img = ocve.read_img(test_file)
-        red_filter = ocve.colour_filter(img, self.red_colour_lower, self.red_colour_higher)
-        black_filter = ocve.colour_filter(img, self.black_colour_lower, self.black_colour_higher)
-        lines_detect = ocve.detect_lines(img)
-
-        ocve.display_image(img)
-        ocve.display_image(red_filter)
-        ocve.display_image(black_filter)
-        ocve.display_image(lines_detect)
-
         self.assertIsNotNone(img)
+
+        red_filter = ocve.colour_filter(img, self.red_colour_lower, self.red_colour_higher)
+        self.assertIsNotNone(red_filter)
+
+        black_filter = ocve.colour_filter(img, self.black_colour_lower, self.black_colour_higher)
+        self.assertIsNotNone(black_filter)
+
+        lines_detect = ocve.detect_lines(img)
+        self.assertIsNotNone(lines_detect)
+
 
 if __name__ == "__main__":
     unittest.main()
