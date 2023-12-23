@@ -12,9 +12,10 @@ def colour_mask(img, lower_colour, upper_colour):
     return masked
 
 def colour_filter(img, lower_colour, upper_colour):
-    mask = cv2.inRange(img, lower_colour, upper_colour)
-    masked = cv2.bitwise_and(img,img, mask=mask)
-    result = img - masked
+    safe = img.copy()
+    mask = cv2.inRange(safe, lower_colour, upper_colour)
+    masked = cv2.bitwise_and(safe,safe, mask=mask)
+    result = safe - masked
     return result
 
 def colour_histogram(img):
@@ -26,8 +27,8 @@ def colour_histogram(img):
     plt.show()
 
 def detect_lines(img):
-    edges = cv2.Canny(img ,50, 150,apertureSize=3)
-    display_image(edges)
+    safe = img.copy()
+    edges = cv2.Canny(safe ,50, 150,apertureSize=3)
     
     minLineLength=5
     maxLineGap=5
