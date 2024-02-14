@@ -70,8 +70,8 @@ def scale(img, x_factor, y_factor, interp=cv2.INTER_NEAREST):
     print(scaled_resolution)
     return cv2.resize(img, scaled_resolution, interpolation=interp)
 
-# Adds guassian noise to image according to parameters
-def guassian_noise(img, strength=1, mean=0, variance=400):
+# Adds gaussian noise to image according to parameters
+def gaussian_noise(img, strength=1, mean=0, variance=400):
     gauss = np.random.normal(mean, variance**0.5, img.shape)
     gauss = gauss.reshape(img.shape)
     noisy = img + gauss * 2
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     # display_image(uniform_scale(test_img, 2, cv2.INTER_NEAREST))
     # display_image(scale(test_img, 2, 0.5, cv2.INTER_NEAREST))
 
-    # display_image(guassian_noise(test_img, 2))
+    # display_image(gaussian_noise(test_img, 2))
     # display_image(salt_pepper_noise(test_img))
     # display_image(salt_pepper_noise(test_img, b_w=True))
 
