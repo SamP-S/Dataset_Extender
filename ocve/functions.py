@@ -5,6 +5,9 @@ import os
 
 def read_img(filepath):
     return cv2.imread(filepath)
+
+def save_img(filepath, img):
+    return cv2.imwrite(filepath, img)
    
 def colour_mask(img, lower_colour, upper_colour):
     mask = cv2.inRange(img, lower_colour, upper_colour)
