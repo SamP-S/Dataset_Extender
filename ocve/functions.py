@@ -108,20 +108,29 @@ def mix_images(img, img2, ratio=0.2):
 # Insert image at coordinates (no mixing/blending)
 def insert_image(img, img2, x, y):
     result = np.copy(img)
-    print(img2.shape)
-    result[y: y + img2.shape[1], x: x + img2.shape[0]] = img2
+    img_subset = img[y: y + img2.shape[1], x: x + img2.shape[0]]
+    result[y: y + img2.shape[1], x: x + img2.shape[0]] = blend_images(img_subset, img2)
     return result
 
 # Blend image into another using transparency 
-### TODO slow
-def blend_images(img, img2, x, y):
-    result = np.copy(img)
-    for j in range(img2.shape[1]):
-        for i in range(img2.shape[0]):
-            ### TODO use transparency as proportionate ratio
-            if img2[j, i, 3] != 0:
-                result[j + y, i + x] = img2[j, i]
-    return result
+def blend_images(img, img2):
+    b1, g1, r1, a1 = cv2.split(img)
+    b2, g2, r2, a2 = cv2.split(img2)
+    
+    a1 = 255 - a2
+    
+    b = (a1 / 255) * b1 + (a2 / 255) * b2
+    g = (a1 / 255) * g1 + (a2 / 255) * g2
+    r = (a1 / 255) * r1 + (a2 / 255) * r2
+    a = np.maximum(a1, a2)
+
+    b = np.clip(b, 0, 255).astype(np.uint8)
+    g = np.clip(g, 0, 255).astype(np.uint8)
+    r = np.clip(r, 0, 255).astype(np.uint8)
+    a = np.clip(a, 0, 255).astype(np.uint8)
+
+    blend = cv2.merge([b, g, r, a])
+    return blend
 
 # Set specific colour to transparent
 def remove_colour(img, r, g, b, a):
