@@ -71,8 +71,8 @@ def scale(img, x_factor, y_factor, interp=cv2.INTER_NEAREST):
     return cv2.resize(img, scaled_resolution, interpolation=interp)
 
 # Adds gaussian noise to image according to parameters
-def gaussian_noise(img, strength=1, mean=0, variance=400):
-    gauss = np.random.normal(mean, variance**0.5, img.shape)
+def gaussian_noise(img, strength=1, mean=0, std=20):
+    gauss = np.random.normal(mean, std, img.shape)
     gauss = gauss.reshape(img.shape)
     noisy = img + gauss * 2
     noisy = np.clip(noisy, 0, 255)
