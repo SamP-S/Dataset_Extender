@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 import os
+import random
 
 def read_img(filepath):
     return cv2.imread(filepath)
@@ -182,6 +183,13 @@ def display_image(img):
 # cv2.COLOR_RGB2BGR
 def convert_colourspace(img, conversion=cv2.COLOR_RGB2BGRA):
     return cv2.cvtColor(img, conversion)
+
+def random_sub_image(img, w, h):
+    max_x = img.shape[0] - w
+    max_y = img.shape[1] - h
+    x = random.randint(0, max_x)
+    y = random.randint(0, max_y)
+    return img[x:x+w, y:y+h]
 
 if __name__ == "__main__":
     cwd = os.getcwd()
