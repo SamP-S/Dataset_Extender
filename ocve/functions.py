@@ -113,6 +113,15 @@ def insert_image(img, img2, x, y):
     result[y: y + img2.shape[1], x: x + img2.shape[0]] = blend_images(img_subset, img2)
     return result
 
+# Insert image at random coordinates
+def random_insert_image(img, img2):
+    x = random.randint(0, img.shape[0] - img2.shape[0])
+    y = random.randint(0, img.shape[1] - img2.shape[1])
+    result = np.copy(img)
+    img_subset = img[y: y + img2.shape[1], x: x + img2.shape[0]]
+    result[y: y + img2.shape[1], x: x + img2.shape[0]] = blend_images(img_subset, img2)
+    return result
+
 # Blend image into another using transparency 
 def blend_images(img, img2):
     b1, g1, r1, a1 = cv2.split(img)
